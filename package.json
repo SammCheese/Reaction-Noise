@@ -1,7 +1,7 @@
 {
-  "name": "plugin-template",
+  "name": "reaction-noise",
   "version": "1.0.0",
-  "description": "A plugin template",
+  "description": "Play a sound when you react to a message",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -20,7 +20,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Unlicensed",
   "devDependencies": {
     "@electron/asar": "^3.2.1",
     "@types/node": "^18.11.2",

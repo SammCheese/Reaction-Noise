@@ -1,25 +1,47 @@
-import { Injector, Logger, webpack } from "replugged";
+import { Injector, settings, types, webpack } from "replugged";
+
+export let ReactionSettings: settings.SettingsManager<
+  { reactSound: string; allPlay: boolean },
+  never
+>;
 
 const inject = new Injector();
-const logger = Logger.plugin("PluginTemplate");
 
 export async function start(): Promise<void> {
-  const typingMod = await webpack.waitForModule<{
-    startTyping: (channelId: string) => void;
-  }>(webpack.filters.byProps("startTyping"));
-  const getChannelMod = await webpack.waitForModule<{
-    getChannel: (id: string) => {
-      name: string;
-    };
-  }>(webpack.filters.byProps("getChannel"));
+  ReactionSettings = await settings.init("reaction-noise", {
+    reactSound:
+      "https://raw.githubusercontent.com/MeguminSama/VencordPlugins/main/plugins/moyai/moyai.mp3",
+    allPlay: false,
+  });
 
-  if (typingMod && getChannelMod) {
-    inject.instead(typingMod, "startTyping", ([channel]) => {
-      const channelObj = getChannelMod.getChannel(channel);
-      logger.log(`Typing prevented! Channel: #${channelObj?.name ?? "unknown"} (${channel}).`);
-    });
+  const reactionMod = await webpack.waitForModule(webpack.filters.bySource("addReaction"));
+
+  if (reactionMod) {
+    // @ts-expect-error expect the unexpected
+    injectReaction(reactionMod);
   }
 }
+
+function injectReaction(ReactionModule: types.ObjectExports): void {
+  // @ts-expect-error object type
+  inject.after(ReactionModule.prototype, "addReaction", (args, _res) => {
+    // Args[3] is an Array only when you send the message, otherwise undefined
+    if (
+      ReactionSettings.get("allPlay", false)
+        ? typeof args[3] === "undefined"
+        : typeof args[3] !== "undefined"
+    ) {
+      void new Audio(
+        ReactionSettings.get(
+          "reactSound",
+          "https://raw.githubusercontent.com/MeguminSama/VencordPlugins/main/plugins/moyai/moyai.mp3",
+        ),
+      ).play();
+    }
+  });
+}
+
+export { Settings } from "./Settings";
 
 export function stop(): void {
   inject.uninjectAll();

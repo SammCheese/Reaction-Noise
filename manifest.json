@@ -1,18 +1,18 @@
 {
-  "id": "dev.replugged.PluginTemplate",
-  "name": "Plugin Template",
-  "description": "A plugin template",
+  "id": "dev.sammcheese.ReactionNoise",
+  "name": "Reaction Noise",
+  "description": "Play a sound when you react to a message",
   "author": {
-    "name": "replugged",
-    "discordID": "1000992611840049192",
-    "github": "replugged-org"
+    "name": "Samm-Cheese#9500",
+    "discordID": "372148345894076416",
+    "github": "sammcheese"
   },
-  "version": "1.0.3",
+  "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "replugged-org/plugin-template"
+    "id": "SammCheese/Reaction-Noise"
   },
-  "license": "MIT",
+  "license": "Unlicensed",
   "type": "replugged-plugin",
   "renderer": "src/index.ts"
 }
